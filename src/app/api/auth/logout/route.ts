@@ -8,7 +8,7 @@ export async function POST() {
 
   const cookiesStore = await cookies();
 
-  const token = cookiesStore.get("__Secure-refreshToken")?.value;
+  const token = cookiesStore.get("Secure-refreshToken")?.value;
 
   // 1.hash the token and revoke token
   if (token) {
@@ -16,6 +16,8 @@ export async function POST() {
       { token: hashToken(token) },
       { revoked: true },
     );
+
+    console.log(tokenDoc + "hello");
   }
 
   // 2.delete cookies
