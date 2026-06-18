@@ -6,6 +6,7 @@ import { v4 as uuidv4 } from "uuid";
 import { signAccessToken } from "@/lib/jwt";
 import { cookies } from "next/headers";
 import { generateRefreshToken, hashToken } from "@/lib/crypto";
+import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   await connectDB();
@@ -51,7 +52,15 @@ export async function POST(req: Request) {
   // 7. set cookies 🍪
   const cookieStore = await cookies();
 
-  cookieStore.set("accessToken", accessToken, {
+  cookieStore.set("Secure-userID", user._id, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+    // maxAge: 15 * 60,
+    path: "/",
+  });
+
+  cookieStore.set("Secure-accessToken", accessToken, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
@@ -59,7 +68,15 @@ export async function POST(req: Request) {
     path: "/",
   });
 
-  cookieStore.set("refreshToken", refreshToken, {
+  cookieStore.set("Secure-refreshToken", refreshToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+    maxAge: 7 * 24 * 60 * 60,
+    path: "/",
+  });
+
+  cookieStore.set("Host-sessionId", sessionId, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
