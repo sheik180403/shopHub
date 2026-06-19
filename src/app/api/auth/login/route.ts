@@ -18,6 +18,13 @@ export async function POST(req: Request) {
     return Response.json({ message: "Invalid credentials" }, { status: 401 });
   }
 
+  if (user.provider !== "local" || !user.password) {
+    return Response.json(
+      { message: "Please sign in with Google" },
+      { status: 401 },
+    );
+  }
+
   const isMatch = await bcrypt.compare(password, user.password);
 
   if (!isMatch) {
@@ -39,6 +46,9 @@ export async function POST(req: Request) {
     token: hashToken(refreshToken),
     expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
   });
+
+  user.lastLoginAt = new Date();
+  await user.save();
 
   const cookieStore = await cookies();
 

@@ -49,14 +49,20 @@ export async function POST(req: Request) {
     });
 
     if (!user) {
-      user = User.create({
+      user = await User.create({
         email,
         name,
         profilePicture: picture,
-        user: "user",
+        role: "user",
         provider: "google",
         googleId,
+        isEmailVerified: true,
       });
+    } else if (user.provider !== "google") {
+      user.googleId = googleId;
+      user.profilePicture = user.profilePicture || picture;
+      user.isEmailVerified = true;
+      await user.save();
     }
 
     // 4. create session

@@ -6,7 +6,6 @@ import { v4 as uuidv4 } from "uuid";
 import { signAccessToken } from "@/lib/jwt";
 import { cookies } from "next/headers";
 import { generateRefreshToken, hashToken } from "@/lib/crypto";
-import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   await connectDB();
