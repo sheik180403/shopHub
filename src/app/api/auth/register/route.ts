@@ -28,6 +28,7 @@ export async function POST(req: Request) {
     name,
     email,
     password: hashedPassword,
+    provider: "local",
   });
 
   // 4. create session

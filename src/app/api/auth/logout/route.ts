@@ -16,8 +16,6 @@ export async function POST() {
       { token: hashToken(token) },
       { revoked: true },
     );
-
-    console.log(tokenDoc + "hello");
   }
 
   // 2.delete cookies

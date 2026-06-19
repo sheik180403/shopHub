@@ -1,10 +1,12 @@
-import mongoose, { Schema, model, models } from "mongoose";
+import { Schema, model, models } from "mongoose";
 
 export interface IUser {
   name: string;
   email: string;
-  password: string;
+  password?: string;
   profilePicture?: string;
+  provider: "local" | "google";
+  googleId?: string;
   role: "user" | "admin";
   isEmailVerified: boolean;
   lastLoginAt?: Date;
@@ -12,7 +14,7 @@ export interface IUser {
   updatedAt: Date;
 }
 
-const userSchema = new Schema<IUser>(
+const userSchema = new Schema(
   {
     name: {
       type: String,
@@ -30,7 +32,18 @@ const userSchema = new Schema<IUser>(
 
     password: {
       type: String,
-      required: true,
+      default: null,
+    },
+
+    provider: {
+      type: String,
+      enum: ["local", "google"],
+      default: "local",
+    },
+
+    googleId: {
+      type: String,
+      default: null,
     },
 
     profilePicture: {
@@ -58,6 +71,6 @@ const userSchema = new Schema<IUser>(
   },
 );
 
-const User = models.User || model<IUser>("User", userSchema);
+const User = models.User || model("User", userSchema);
 
 export default User;
